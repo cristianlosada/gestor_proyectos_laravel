@@ -12,9 +12,8 @@ class TareaController extends Controller
     public function crear(Request $request, int $id_proyecto)
     {
         // Valida que el proyecto exista
-        try {
-            $proyecto = Proyecto::find($id_proyecto);
-        } catch (ModelNotFoundException $e) {
+        $proyecto = Proyecto::find($id_proyecto);
+        if (!$proyecto) {
             return response()->json([
                 "error" => "El proyecto no existe.",
                 "code" => 404,

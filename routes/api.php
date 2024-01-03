@@ -12,6 +12,7 @@ Route::controller(ProyectoController::class)->group(function () {
     Route::get('/proyecto/{id}/tareas', 'tareas');
     Route::post('/proyecto',            'crear');
     Route::put('/proyecto/{id}',        'edit');
+    Route::delete('/proyecto/{id}',     'delete');
 });
 
 // forma de acceder a las rutas agrupadas de las tareas
