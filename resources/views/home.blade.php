@@ -19,16 +19,21 @@
     </header>
 
     <main class="container mx-auto my-8">
-        <section class="bg-white shadow-sm rounded p-4">
+        <section class="bg-gray text-white shadow-sm rounded p-4">
             <h2>Título de la Sección</h2>
-
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed ultrices risus. Nunc euismod velit a purus ullamcorper, id ultrices leo tincidunt. Maecenas sit amet purus velit. Morbi euismod orci eget lacus ullamcorper, id hendrerit lectus tincidunt.</p>
-
-            <button class="bg-gray-800 text-white rounded px-4 py-2">Más información</button>
+            <br>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed ultrices risus. Nunc euismod velit a purus ullamcorper, id ultrices leo tincidunt. Maecenas sit amet purus velit. Morbi euismod orci eget lacus ullamcorper, id hendrerit lectus tincidunt.
+            </p>
+            <br>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed ultrices risus. Nunc euismod velit a purus ullamcorper, id ultrices leo tincidunt. Maecenas sit amet purus velit. Morbi euismod orci eget lacus ullamcorper, id hendrerit lectus tincidunt.
+            </p>
+            <br>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sed ultrices risus. Nunc euismod velit a purus ullamcorper, id ultrices leo tincidunt. Maecenas sit amet purus velit. Morbi euismod orci eget lacus ullamcorper, id hendrerit lectus tincidunt.
+            </p>
         </section>
 
         <section class="bg-white shadow-sm rounded p-4 mt-4">
-            <h2>Otra Sección</h2>
+            <h2>Listado de proyectos</h2>
 
             <ul>
                 <li>Elemento de la lista 1</li>

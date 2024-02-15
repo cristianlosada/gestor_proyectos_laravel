@@ -11,8 +11,41 @@ class ProyectoController extends Controller {
   public function __construct() {
     
   }
-  public function home() {
-    return view('home');
+  public function home(Request $request) {
+    $fechaInicio = $request->get('fecha_inicio');
+    $fechaFinal  = $request->get('fecha_final');
+    $buscador    = $request->get('buscador');
+    $ordenar     = $request->get('ordenar');
+    $direccion   = $request->get('direccion');
+    //
+    $proyectos = Proyecto::with('tareas');
+    // Filtro por fecha
+    // Filtro por fecha, descripcion y estado (con múltiples condiciones)
+    if ($fechaInicio && $fechaFinal && $buscador) {
+      $proyectos->where(function ($query) use ($request) {
+        $query->whereBetween('fecha_inicio', [$request->get('fecha_inicio'), $request->get('fecha_final')])
+          ->where(function ($query) use ($request) {
+            $query->where('descripcion', 'like', '%' . $request->get('buscador') . '%')
+              ->orWhere('titulo', 'like', '%' . $request->get('buscador') . '%');
+          });
+      });
+    }
+    else if ($fechaInicio && $fechaFinal)
+      $proyectos = $proyectos->whereBetween('fecha_inicio', [$fechaInicio, $fechaFinal]);
+    else if ($buscador) {
+      $proyectos = $proyectos->Where('descripcion', 'like', '%' . $buscador . '%')
+      ->OrWhere('titulo', 'like', '%' . $buscador . '%');
+    }
+    if ($ordenar && $direccion){
+      $proyectos->orderBy($ordenar, $direccion);
+      $direccion = $direccion == 'asc' ? 'desc' : 'asc';
+    }
+    $proyectos = $proyectos->paginate(50);
+    // $proyectos = Proyecto::with('tareas')->where('estado', '=', '1')->orderBy('created_at', 'desc')->paginate(10);
+    return view('dashboard', [
+      'proyectos' => $proyectos,
+      'ordenar'   => $ordenar,
+      'direccion' => $direccion]);
   }
   /**
    * metodo encargado de consultar el total de registros

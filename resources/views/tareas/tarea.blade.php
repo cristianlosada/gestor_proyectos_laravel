@@ -11,9 +11,10 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("Listado de tareas!") }}
-                    <table class="mb-4">
-                        <thead class="thead-light">
-                            <tr>
+                    <div class="py-12 grid grid-cols-1 place-items-center">
+                        <table class="mb-4 w-full border-collapse border border-gray-400">
+                            <thead>
+                                <tr class="bg-gray-500">
                                 <th>Proyecto</th>
                                 <th>Titulo</th>
                                 <th>Descripcion</th>
@@ -64,6 +65,7 @@
                     </table>
 
                     {{ $tareas->links() }}
+                    </div>
                 </div>
             </div>
         </div>

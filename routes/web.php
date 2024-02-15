@@ -41,9 +41,7 @@ Route::resource('tareas', TareaController::class)->middleware('auth');
 //     Route::put('/del_tareas/{id}',       'delete')->name('delete_tarea');
 // })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [ProyectoController::class, 'home'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
