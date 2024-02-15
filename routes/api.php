@@ -14,7 +14,7 @@ Route::controller(ProyectoController::class)->group(function () {
     Route::post('/proyectofilter',      'filter');
     Route::put('/proyecto/{id}',        'edit');
     Route::delete('/proyecto/{id}',     'delete');
-});
+})->middleware('sanctum');
 
 // forma de acceder a las rutas agrupadas de las tareas
 Route::controller(TareaController::class)->group(function () {
@@ -23,4 +23,4 @@ Route::controller(TareaController::class)->group(function () {
     Route::get('/tareas/{id}',           'show');
     Route::put('/tareas/{id}',           'edit');
     Route::put('/del_tareas/{id}',       'delete');
-});
+})->middleware('sanctum');

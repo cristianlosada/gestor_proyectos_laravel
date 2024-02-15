@@ -8,13 +8,20 @@ use App\Models\Tarea;
 use Carbon\Carbon;
 
 class ProyectoController extends Controller {
+  public function __construct() {
+    
+  }
+  public function home() {
+    return view('home');
+  }
   /**
    * metodo encargado de consultar el total de registros
    */
   public function index() {
     // Lógica para mostrar una lista de proyectos
-    $proyectos = Proyecto::all();
+    $proyectos = Proyecto::with('tareas')->where('estado', '=', '1')->orderBy('created_at', 'desc')->paginate(10);
     // Devuelve la tarea creada
+    return view('proyectos.proyecto', ['proyectos' => $proyectos]);
     return response()->json($proyectos);
   }
   /**
@@ -37,10 +44,10 @@ class ProyectoController extends Controller {
    * fisicamente sino logicamente en base de datos para perseverar la integridad de la informacion.
    */
   public function delete(int $id) {
-    $proyecto = Proyecto::findOrFail($id);
+    $proyecto = Proyecto::with('tareas')->findOrFail($id);
     if ($proyecto->tareas()->count() > 0) {
       return response()->json([
-        'message' => 'El proyecto no se puede eliminar porque tiene tareas asociadas.',
+        'message' => $proyecto,
       ], 400);
     }
     if (!$proyecto) {
@@ -50,9 +57,16 @@ class ProyectoController extends Controller {
       ], 404);
     }
     $proyecto->delete();
+    return back();
     return response()->json([
       'success' => true,
     ], 200);
+  }
+  public function cargar_editar(int $id) {
+    $proyecto = Proyecto::find($id);
+    return view('proyectos.edit', [
+      'proyecto' => $proyecto
+    ]);
   }
   /**
    * metodo que edita el registro en base de datos.
@@ -60,6 +74,19 @@ class ProyectoController extends Controller {
   public function edit(Request $request, int $id) {
     // Lógica para editar un proyecto en la base de datos
     $proyecto = Proyecto::find($id);
+    $request->validate([
+      'titulo'       => 'required',
+      'descripcion'  => 'required:posts,descripcion',
+      'fecha_inicio' => 'required|date|before_or_equal:fecha_final',
+      'fecha_final'  => 'required|date|after_or_equal:fecha_inicio',
+    ],[
+        'titulo.required'      =>'Este campo es requerido',
+        'descripcion.required' =>'Este campo es requerido',
+        'fecha_inicio.required'=>'Este campo es Requerido',
+        'fecha_final.required' =>'Este campo es Requerido',
+        'fecha_inicio.before_or_equal' => 'La fecha de inicio debe ser mayor o igual que la fecha final.',
+        'fecha_final.after_or_equal' => 'La fecha final debe ser menor o igual que la fecha de inicio.',
+    ]);
     if (!$proyecto) {
       return response()->json([
         "error" => "El proyecto no existe.",
@@ -68,10 +95,14 @@ class ProyectoController extends Controller {
     }
     $proyecto->titulo       = $request->input('titulo');
     $proyecto->descripcion  = $request->input('descripcion');
-    $proyecto->estado_tarea = $request->input('estado_tarea');
-    $proyecto->estado       = $request->input('estado');
-    $proyecto->save();
-    return response()->json($proyecto);
+    $proyecto->fecha_inicio = $request->input('fecha_inicio');
+    $proyecto->fecha_final  = $request->input('fecha_final');
+    $proyecto->estado       = '1';
+    $proyecto->update();
+    if ($request->is('api/*'))
+      return response()->json($proyecto);
+    else
+      return redirect()->route('proyectos');
   }
   /**
    * consulta las tareas y el proyecto relacionado
@@ -92,20 +123,45 @@ class ProyectoController extends Controller {
       ]);
   }
   /**
-   * crea el registro del proyecto
-   */
+   * crea el
+   *  registro del proyecto
+   */ 
+  public function cargar_crear(Proyecto $proyecto)
+  {
+    return view('proyectos.crear', ['proyecto' => $proyecto]);
+  }
+  /**
+   * crea el
+   *  registro del proyecto
+   */ 
   public function crear(Request $request)
   {
+    $request->validate([
+      'titulo'       => 'required',
+      'descripcion'  => 'required:posts,descripcion',
+      'fecha_inicio' => 'required|date|before_or_equal:fecha_final',
+      'fecha_final'  => 'required|date|after_or_equal:fecha_inicio',
+    ],[
+        'titulo.required'              => 'Este campo es requerido',
+        'descripcion.required'         => 'Este campo es requerido',
+        'fecha_inicio.required'        => 'Este campo es Requerido',
+        'fecha_final.required'         => 'Este campo es Requerido',
+        'fecha_inicio.before_or_equal' => 'La fecha de inicio debe ser mayor o igual que la fecha final.',
+        'fecha_final.after_or_equal'   => 'La fecha final debe ser menor o igual que la fecha de inicio.',
+    ]);
     // Crea la proyecto
     $proyecto               = new Proyecto();
     $proyecto->titulo       = $request->input('titulo');
     $proyecto->descripcion  = $request->input('descripcion');
     $proyecto->fecha_inicio = $request->input('fecha_inicio');
     $proyecto->fecha_final  = $request->input('fecha_final');
-    $proyecto->estado       = $request->input('estado');
+    $proyecto->estado       = '1';
     $proyecto->save();
     // Devuelve el proyecto creada
-    return response()->json($proyecto);
+    if ($request->is('api/*'))
+      return response()->json($proyecto);
+    else
+      return redirect()->route('proyectos');
   }
   /**
    * consulta los proyectos por medio de los filtros
