@@ -6,9 +6,7 @@
   <label class="text-sm">Proyecto Asignado</label>
   <span class="text-red-500 text-xs">@error('proyecto') {{ $message }} @enderror</span>
   <select name="proyecto" id="proyecto" class="rounded border-gray-500 bg-gray-700 text-white w-full mb-4">
-    @foreach ($proyectos as $proyecto)
-      <option value="{{ $proyecto['id'] }}" @selected(old('proyecto', !isset($tarea) ? $tarea->proyecto->id : '') === $proyecto['id'])>{{$tarea->proyecto->titulo}}</option>
-    @endforeach
+    <option value="{{ $tarea->proyecto->id }}" @selected(old('proyecto', !isset($tarea) ? $tarea->proyecto->id : ''))>{{$tarea->proyecto->titulo}}</option>
   </select>
 
   <div class="uppercase font-bold mb-2">

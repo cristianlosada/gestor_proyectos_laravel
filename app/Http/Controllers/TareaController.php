@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Models\Proyecto;
 use App\Models\Tarea;
+use App\Models\RoleUser;
 
 class TareaController extends Controller
 {
@@ -15,13 +16,13 @@ class TareaController extends Controller
   public function index(Request $request) {
     // Lógica para mostrar una lista de tareas
     $tareas = Tarea::where('estado', '=', '1')->paginate(10);
+    $role = RoleUser::with('role')->where('user_id', '=', auth()->user()->id)->paginate(10);
+    $role = $role->getCollection()->first();
     // Devuelve la tarea creada
     if ($request->is('api/*'))
       return response()->json($tareas);
     else  {
-      return view('tareas.tarea', [
-        'tareas' => $tareas
-      ]);
+      return view('tareas.tarea', compact('tareas', 'role'));
     }
   }
    /**
@@ -45,7 +46,7 @@ class TareaController extends Controller
    */
   public function edit($id, Request $request) {
     // Devuelve la tarea creada
-    $tarea     = Tarea::with('proyecto')->find($id);
+    $tarea = Tarea::with('proyecto')->find($id);
     if ($request->is('api/*')) {
       $tarea_model = new Tarea();
       $validacion  = $tarea_model->validador_tarea($request->all());

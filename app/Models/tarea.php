@@ -23,6 +23,10 @@ class tarea extends Model
     {
         return $this->belongsTo(Proyecto::class);
     }
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
     /**
      * Metodo que valida los filtros y ordenamiendo de busquedas
      */

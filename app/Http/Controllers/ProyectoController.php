@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Proyecto;
 use App\Models\Tarea;
 use Carbon\Carbon;
+use App\Models\RoleUser;
 
 class ProyectoController extends Controller {
   public function __construct() {
@@ -53,8 +54,10 @@ class ProyectoController extends Controller {
   public function index() {
     // Lógica para mostrar una lista de proyectos
     $proyectos = Proyecto::with('tareas')->where('estado', '=', '1')->orderBy('created_at', 'desc')->paginate(10);
+    $role = RoleUser::with('role')->where('user_id', '=', auth()->user()->id)->paginate(10);
+    $role = $role->getCollection()->first();
     // Devuelve la tarea creada
-    return view('proyectos.proyecto', ['proyectos' => $proyectos]);
+    return view('proyectos.proyecto', ['proyectos' => $proyectos, 'role' => $role]);
     return response()->json($proyectos);
   }
   /**
